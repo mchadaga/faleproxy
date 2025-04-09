@@ -33,40 +33,33 @@ app.post('/fetch', async (req, res) => {
     const $ = cheerio.load(html);
     
     // Function to replace text but skip URLs and attributes
-    function replaceYaleWithFale(i, el) {
-      if ($(el).children().length === 0 || $(el).text().trim() !== '') {
-        // Get the HTML content of the element
-        let content = $(el).html();
-        
-        // Only process if it's a text node
-        if (content && $(el).children().length === 0) {
-          // Replace Yale with Fale in text content only
-          content = content.replace(/Yale/g, 'Fale').replace(/yale/g, 'fale');
-          $(el).html(content);
+    function replaceText($) {
+      // Process text nodes in the body
+      $('body *').contents().filter(function() {
+        return this.nodeType === 3; // Text nodes only
+      }).each(function() {
+        const text = $(this).text();
+        const newText = text.replace(/Yale/g, 'Fale').replace(/yale/g, 'fale');
+        if (text !== newText) {
+          $(this).replaceWith(newText);
         }
+      });
+
+      // Process title separately
+      const title = $('title').text();
+      const newTitle = title.replace(/Yale/g, 'Fale').replace(/yale/g, 'fale');
+      if (title !== newTitle) {
+        $('title').text(newTitle);
       }
     }
-    
-    // Process text nodes in the body
-    $('body *').contents().filter(function() {
-      return this.nodeType === 3; // Text nodes only
-    }).each(function() {
-      // Replace text content but not in URLs or attributes
-      const text = $(this).text();
-      const newText = text.replace(/Yale/g, 'Fale').replace(/yale/g, 'fale');
-      if (text !== newText) {
-        $(this).replaceWith(newText);
-      }
-    });
-    
-    // Process title separately
-    const title = $('title').text().replace(/Yale/g, 'Fail').replace(/yale/g, 'fail');
-    $('title').text(title);
-    
-    return res.json({ 
-      success: true, 
+
+    // Apply the text replacement
+    replaceText($);
+
+    return res.json({
+      success: true,
       content: $.html(),
-      title: title,
+      title: $('title').text(),
       originalUrl: url
     });
   } catch (error) {
