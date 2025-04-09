@@ -39,25 +39,17 @@ app.post('/fetch', async (req, res) => {
         return this.nodeType === 3; // Text nodes only
       }).each(function() {
         const text = $(this).text();
-        // Only replace if "Yale" is actually present (case-insensitive)
-        if (text.match(/yale/i)) {
-          const newText = text
-            .replace(/YALE/g, 'FALE')
-            .replace(/Yale/g, 'Fale')
-            .replace(/yale/g, 'fale');
+        // Only replace if text is different after replacement
+        const newText = text.replace(/Yale/g, 'Fale').replace(/yale/g, 'fale');
+        if (text !== newText) {
           $(this).replaceWith(newText);
         }
       });
 
       // Process title separately
       const title = $('title').text();
-      if (title.match(/yale/i)) {
-        const newTitle = title
-          .replace(/YALE/g, 'FALE')
-          .replace(/Yale/g, 'Fale')
-          .replace(/yale/g, 'fale');
-        $('title').text(newTitle);
-      }
+      const newTitle = title.replace(/Yale/g, 'Fale').replace(/yale/g, 'fale');
+      $('title').text(newTitle);
     }
 
     // Apply the text replacement
