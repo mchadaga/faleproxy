@@ -30,8 +30,7 @@
     "collectCoverageFrom": [
       "**/*.js",
       "!**/node_modules/**",
-      "!**/coverage/**",
-      "!jest.config.js"
+      "!**/public/**"
     ],
     "coverageThreshold": {
       "global": {
