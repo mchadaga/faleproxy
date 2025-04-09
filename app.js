@@ -39,16 +39,23 @@ app.post('/fetch', async (req, res) => {
         return this.nodeType === 3; // Text nodes only
       }).each(function() {
         const text = $(this).text();
-        const newText = text.replace(/Yale/g, 'Fale').replace(/yale/g, 'fale');
-        if (text !== newText) {
+        // Only replace if "Yale" is actually present (case-insensitive)
+        if (text.match(/yale/i)) {
+          const newText = text
+            .replace(/YALE/g, 'FALE')
+            .replace(/Yale/g, 'Fale')
+            .replace(/yale/g, 'fale');
           $(this).replaceWith(newText);
         }
       });
 
       // Process title separately
       const title = $('title').text();
-      const newTitle = title.replace(/Yale/g, 'Fale').replace(/yale/g, 'fale');
-      if (title !== newTitle) {
+      if (title.match(/yale/i)) {
+        const newTitle = title
+          .replace(/YALE/g, 'FALE')
+          .replace(/Yale/g, 'Fale')
+          .replace(/yale/g, 'fale');
         $('title').text(newTitle);
       }
     }
